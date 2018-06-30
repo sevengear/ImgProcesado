@@ -15,8 +15,7 @@ typedef struct {
     uint8_t alpha;
 } rgba;
 /*Conversion a grises por pixel*/
-JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_convertirGrises
-    (JNIEnv *env, jobject obj, jobject bitmapcolor, jobject bitmapgris) {
+JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_convertirGrises(JNIEnv *env, jobject obj, jobject bitmapcolor, jobject bitmapgris) {
     AndroidBitmapInfo infocolor;
     void *pixelscolor;
     AndroidBitmapInfo infogris;
@@ -81,7 +80,7 @@ JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_convertirSepia(J
     int ret;
     int y;
     int x;
-    LOGI("convertirGrises");
+    LOGI("convertirSepia");
     if((ret = AndroidBitmap_getInfo(env, bitmapcolor, &infocolor)) < 0) {
         LOGE("AndroidBitmapColor_getInfo() failed ! error=%d", ret);
         return;

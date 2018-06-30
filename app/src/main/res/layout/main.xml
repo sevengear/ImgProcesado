@@ -2,13 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="400dp"
         android:scaleType="centerCrop"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:id="@+id/ivDisplay"/>
+        android:id="@+id/ivDisplay"
+        tools:src="@drawable/sampleimage"/>
     <LinearLayout
         android:orientation="horizontal"
         android:gravity="center"
@@ -28,5 +30,12 @@
             android:layout_height="wrap_content"
             android:text="Grises"
             android:onClick="onConvertirGrises" />
+        <Button
+            android:id="@+id/btnConvertSepia"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sepia"
+            android:onClick="onConvertirSepia" />
     </LinearLayout>
 </LinearLayout>

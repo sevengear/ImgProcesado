@@ -1,4 +1,4 @@
-package com.imgprocesado;
+package com.imgprocesadondk;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,7 +25,7 @@ public class ImgProcesadoNDK extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         Log.i(tag, "Imagen antes de modificar");
-        ivDisplay = (ImageView) findViewById(R.id.ivDisplay);
+        ivDisplay = findViewById(R.id.ivDisplay);
         BitmapFactory.Options options = new BitmapFactory.Options(); // Asegurar que la imagen tiene 24 bits de color
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         bitmapOriginal = BitmapFactory.decodeResource(this.getResources(), R.drawable.sampleimage, options);

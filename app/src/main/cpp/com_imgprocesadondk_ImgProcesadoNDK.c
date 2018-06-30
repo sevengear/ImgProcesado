@@ -50,7 +50,7 @@ JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_convertirGrises
     if ((ret = AndroidBitmap_lockPixels(env, bitmapcolor, &pixelscolor)) < 0) {
         LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
     }
-    if ((ret = AndroidBitmap_lockPixels(env,bitmapgris,&pixelsgris)) <0){
+    if ((ret = AndroidBitmap_lockPixels(env, bitmapgris, &pixelsgris)) < 0) {
         LOGE("AndroidBitmap_lockPixels() fallo ! error=%d", ret);
     }
     // modificacion pixeles en el algoritmo de escala grises
@@ -58,7 +58,7 @@ JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_convertirGrises
         rgba *line = (rgba *) pixelscolor;
         rgba *grisline = (rgba *) pixelsgris;
         for (x = 0; x < infocolor.width; x++) {
-            float output = (line[x].red + line[x].green + line[x].blue)/3;
+            float output = (line[x].red + line[x].green + line[x].blue) / 3;
             if (output > 255) output = 255;
             grisline[x].red = grisline[x].green = grisline[x].blue =
                     (uint8_t) output;
@@ -70,4 +70,61 @@ JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_convertirGrises
     LOGI("unlocking pixels");
     AndroidBitmap_unlockPixels(env, bitmapcolor);
     AndroidBitmap_unlockPixels(env, bitmapgris);
+}
+
+/*Conversion a sepia por pixel*/
+JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_convertirSepia(JNIEnv *env, jobject obj, jobject bitmapcolor, jobject bitmapsepia) {
+    AndroidBitmapInfo infocolor;
+    void *pixelscolor;
+    AndroidBitmapInfo infosepia;
+    void *pixelssepia;
+    int ret;
+    int y;
+    int x;
+    LOGI("convertirGrises");
+    if((ret = AndroidBitmap_getInfo(env, bitmapcolor, &infocolor)) < 0) {
+        LOGE("AndroidBitmapColor_getInfo() failed ! error=%d", ret);
+        return;
+    }
+    if((ret = AndroidBitmap_getInfo(env, bitmapsepia, &infosepia)) < 0) {
+        LOGE("AndroidBitmapSepia_getInfo() failed ! error=%d", ret);
+        return;
+    }
+    LOGI("imagen color :: ancho %d;alto %d;avance %d;formato %d;flags %d",
+         infocolor.width, infocolor.height, infocolor.stride, infocolor.format, infocolor.flags);
+
+    if(infocolor.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+        LOGE("Bitmap color no es formato RGBA_8888 !");
+        return;
+    }
+    LOGI("imagen color :: ancho %d;alto %d;avance %d;formato %d;flags %d",
+         infosepia.width, infosepia.height, infosepia.stride, infosepia.format, infosepia.flags);
+
+    if(infosepia.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+        LOGE("Bitmap sepia no es formato RGBA_8888 !");
+        return;
+    }
+    if((ret = AndroidBitmap_lockPixels(env, bitmapcolor, &pixelscolor)) < 0) {
+        LOGE("AndroidBitmapColor_lockPixels() failed ! error=%d", ret);
+    }
+    if((ret = AndroidBitmap_lockPixels(env,bitmapsepia,&pixelssepia)) <0){
+        LOGE("AndroidBitmapSepia_lockPixels() fallo ! error=%d", ret);
+    }
+    // modificacion pixeles en el algoritmo de escala grises
+    for(y = 0; y < infocolor.height; y++) {
+        rgba *line = (rgba *) pixelscolor;
+        rgba *sepialine = (rgba *) pixelssepia;
+        for(x = 0; x < infocolor.width; x++) {
+            sepialine[x].red = (uint8_t) ((line[x].red * .393) + (line[x].green * .769) + (line[x].blue * .189));
+            sepialine[x].green = (uint8_t) ((line[x].red * .349) + (line[x].green * .686) + (line[x].blue * .168));
+            sepialine[x].blue = (uint8_t) ((line[x].red * .272) + (line[x].green * .534) + (line[x].blue * .131));
+            sepialine[x].alpha = line[x].alpha;
+        }
+        pixelscolor = (char *) pixelscolor + infocolor.stride;
+        pixelssepia = (char *) pixelssepia + infosepia.stride;
+    }
+
+    LOGI("unlocking pixels");
+    AndroidBitmap_unlockPixels(env, bitmapcolor);
+    AndroidBitmap_unlockPixels(env, bitmapsepia);
 }

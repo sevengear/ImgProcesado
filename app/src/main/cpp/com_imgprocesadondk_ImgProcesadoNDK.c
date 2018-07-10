@@ -127,3 +127,85 @@ JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_convertirSepia(J
     AndroidBitmap_unlockPixels(env, bitmapcolor);
     AndroidBitmap_unlockPixels(env, bitmapsepia);
 }
+
+/*Insertar Marco*/
+JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_insertarMarco(JNIEnv *env, jobject obj, jobject bitmapcolor, jobject bitmapmarco) {
+    AndroidBitmapInfo infocolor;
+    void *pixelscolor;
+    AndroidBitmapInfo infomarco;
+    void *pixelsmarco;
+    int ret;
+    int y;
+    int x;
+    LOGI("insertado de marco");
+    if((ret = AndroidBitmap_getInfo(env, bitmapcolor, &infocolor)) < 0) {
+        LOGE("AndroidBitmapColor_getInfo() failed ! error=%d", ret);
+        return;
+    }
+    if((ret = AndroidBitmap_getInfo(env, bitmapmarco, &infomarco)) < 0) {
+        LOGE("AndroidBitmapMarco_getInfo() failed ! error=%d", ret);
+        return;
+    }
+    LOGI("imagen color :: ancho %d;alto %d;avance %d;formato %d;flags %d",
+         infocolor.width, infocolor.height, infocolor.stride, infocolor.format, infocolor.flags);
+
+    if(infocolor.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+        LOGE("Bitmap color no es formato RGBA_8888 !");
+        return;
+    }
+    LOGI("imagen color :: ancho %d;alto %d;avance %d;formato %d;flags %d",
+         infomarco.width, infomarco.height, infomarco.stride, infomarco.format, infomarco.flags);
+
+    if(infomarco.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+        LOGE("Bitmap sepia no es formato RGBA_8888 !");
+        return;
+    }
+    if((ret = AndroidBitmap_lockPixels(env, bitmapcolor, &pixelscolor)) < 0) {
+        LOGE("AndroidBitmapColor_lockPixels() failed ! error=%d", ret);
+    }
+    if((ret = AndroidBitmap_lockPixels(env,bitmapmarco,&pixelsmarco)) <0){
+        LOGE("AndroidBitmapMarco_lockPixels() fallo ! error=%d", ret);
+    }
+    // modificacion pixeles en el algoritmo de escala grises
+    for(y = 0; y < infocolor.height; y++) {
+        rgba *line = (rgba *) pixelscolor;
+        rgba *marcoline = (rgba *) pixelsmarco;
+        if(y < 10) {
+            for (x = 0; x < infocolor.width; x++) {
+                float output = 0;
+                marcoline[x].red = marcoline[x].green = marcoline[x].blue =
+                        (uint8_t) output;
+                marcoline[x].alpha = line[x].alpha;
+            }
+        }
+        if(y >= 10 && y < infocolor.height - 10) {
+            for (x = 0; x < infocolor.width; x++) {
+                if(x < 10 || x >= infocolor.width-10) {
+                    float output = 0;
+                    marcoline[x].red = marcoline[x].green = marcoline[x].blue =
+                            (uint8_t) output;
+                    marcoline[x].alpha = line[x].alpha;
+                } else {
+                    marcoline[x].red = line[x].red;
+                    marcoline[x].green = line[x].green;
+                    marcoline[x].blue = line[x].blue;
+                    marcoline[x].alpha = line[x].alpha;
+                }
+            }
+        }
+        if(y >= infocolor.height - 10) {
+            for (x = 0; x < infocolor.width; x++) {
+                float output = 0;
+                marcoline[x].red = marcoline[x].green = marcoline[x].blue =
+                        (uint8_t) output;
+                marcoline[x].alpha = line[x].alpha;
+            }
+        }
+        pixelscolor = (char *) pixelscolor + infocolor.stride;
+        pixelsmarco = (char *) pixelsmarco + infomarco.stride;
+    }
+
+    LOGI("unlocking pixels");
+    AndroidBitmap_unlockPixels(env, bitmapcolor);
+    AndroidBitmap_unlockPixels(env, bitmapmarco);
+}

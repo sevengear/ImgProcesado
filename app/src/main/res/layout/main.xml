@@ -7,8 +7,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="400dp"
-        android:scaleType="centerCrop"
-        android:layout_gravity="center_vertical|center_horizontal"
+        android:scaleType="fitXY"
         android:id="@+id/ivDisplay"
         tools:src="@drawable/sampleimage"/>
     <LinearLayout
@@ -49,6 +48,13 @@
                 android:layout_height="wrap_content"
                 android:text="Sepia"
                 android:onClick="onConvertirSepia" />
+            <Button
+                android:id="@+id/btnAddMarco"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Marco1"
+                android:onClick="onAddMarco" />
         </LinearLayout>
     </LinearLayout>
 

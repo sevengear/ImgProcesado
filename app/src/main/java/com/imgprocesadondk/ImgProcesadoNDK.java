@@ -15,6 +15,7 @@ public class ImgProcesadoNDK extends AppCompatActivity {
     private Bitmap bitmapOriginal = null;
     private Bitmap bitmapGrises = null;
     private Bitmap bitmapSepia = null;
+    private Bitmap bitmapMarco = null;
     private ImageView ivDisplay = null;
     private Bitmap bitmap = null;
 
@@ -24,6 +25,7 @@ public class ImgProcesadoNDK extends AppCompatActivity {
 
     public native void convertirGrises(Bitmap bitmapIn, Bitmap bitmapOut);
     public native void convertirSepia(Bitmap bitmapIn, Bitmap bitmapOut);
+    public native void insertarMarco(Bitmap bitmapIn, Bitmap bitmapOut);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,16 @@ public class ImgProcesadoNDK extends AppCompatActivity {
         bitmapSepia = Bitmap.createBitmap(bitmapOriginal.getWidth(), bitmapOriginal.getHeight(), Bitmap.Config.ARGB_8888);
         convertirSepia(bitmapOriginal, bitmapSepia);
         ivDisplay.setImageBitmap(bitmapSepia);
+    }
+
+    public void onAddMarco(View v) {
+        Log.i(tag, "Añadiendo Marco");
+        if(bitmap != null) {
+            bitmapOriginal = bitmap;
+        }
+        bitmapMarco = Bitmap.createBitmap(bitmapOriginal.getWidth(), bitmapOriginal.getHeight(), Bitmap.Config.ARGB_8888);
+        insertarMarco(bitmapOriginal, bitmapMarco);
+        ivDisplay.setImageBitmap(bitmapMarco);
     }
 
     public void onTakeImage(View v) {
